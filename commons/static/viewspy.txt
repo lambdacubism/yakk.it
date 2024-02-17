@@ -1,0 +1,179 @@
+from django.shortcuts import render
+import cv2
+import numpy as np
+
+def createMondrian(Request):
+import random
+    toile_size = 16  # in units
+    unit = 30  # in pixels
+    colors = [
+        'rgb(216, 0, 0)', 'rgb(141, 102, 197)', 'rgb(172, 225, 221)',
+        'rgb(106, 129, 171)', 'rgb(231, 206, 161)', 'rgb(225, 226, 228)'
+    ]
+    svg_content = f'<svg id="SVG" style="height:{toile_size * unit}px; width:{toile_size * unit}px; background:#ccc;">'
+
+    def assign_random_color():
+        return random.choice(colors)
+
+    def create_random_block_size():
+        size = round(random.random() * 100 / toile_size)
+        width = size
+        height = 0
+        if size == 6:
+            height = 4
+        elif size == 5:
+            height = 3
+        elif size == 4:
+            height = 2
+        elif size in [1, 0]:
+            height = 1
+        else:
+            height = width
+        return width, height
+
+    nth_gradient = 0
+
+    def create_defs(gradient_id, cx, cy, r, offset1, stop_color1, offset2, stop_color2):
+        return (
+            f'<defs>'
+            f'<radialGradient id="{gradient_id}" cx="{cx}" cy="{cy}" r="{r}">'
+            f'<stop offset="{offset1}" stop-color="{stop_color1}" />'
+            f'<stop offset="{offset2}" stop-color="{stop_color2}" />'
+            f'</radialGradient>'
+            f'</defs>'
+        )
+
+    def create_next_block():
+        nonlocal nth_gradient
+        width, height = create_random_block_size()
+        color1 = assign_random_color()
+        color2 = assign_random_color()
+        nth_gradient += 1
+        defs = create_defs(f'RG{nth_gradient}', '0.50', '0.25', '0.95', '0%', color1, '100%', color2)
+        block = (
+            f'<rect width="{width * unit}" height="{height * unit}" '
+            f'fill="url(#RG{nth_gradient})" />'
+        )
+        return f'{defs}{block}', width, height
+
+
+    def redeploy_block(block, accumulated_x, accumulated_y, width, height):
+        block = (
+            f'<rect x="{accumulated_x * unit}" y="{accumulated_y * unit}" '
+            f'width="{width * unit}" height="{height * unit}"'
+        )
+
+    # Generate SVG blocks
+    accumulated_x = 0
+    accumulated_y = 0
+    for _ in range(10):
+        block, width, height = create_next_block()
+        fixed_column_width = width
+        accumulated_x += fixed_column_width
+        accumulated_y += height
+        is_new_row = True
+
+        while accumulated_x < toile_size:
+            accumulated_x -= fixed_column_width
+            block, width, height = create_next_block()
+            if width > fixed_column_width:
+                width = fixed_column_width
+            redeploy_block(block, accumulated_x, accumulated_y, width, height)
+            is_new_row = False
+            accumulated_x += width
+            accumulated_remaining_space = fixed_column_width - width
+            fixed_row_height = height
+
+            while is_new_row == False:
+                block, width, height = create_next_block()
+                if width > accumulated_remaining_space:
+                    width = accumulated_remaining_space
+                if height != fixed_row_height:
+                    height = fixed_row_height
+                redeploy_block(block, accumulated_x, accumulated_y, width, height)
+                accumulated_x += width
+                accumulated_remaining_space -= width
+                if accumulated_remaining_space == 0:
+                    accumulated_y += fixed_row_height
+                    is_new_row = True
+
+        accumulated_y = 0
+        if accumulated_x >= toile_size:
+            break
+
+    svg_content += create_next_block()
+
+    svg_content += '</svg>'
+    print(svg_content)
+
+    #return HttpResponse(svg_content, content_type='image/svg+xml')
+
+    response = render(Request, 'projectx.html', {'Dada': '...'})
+    return response
+
+
+
+def mergeImages( Request ):
+    print("hello")
+    '''
+    Img1    = cv2.imread( "A:\\_\\triptych\\virtual\\triptych\\commons\\static\\vDB\\logo.png ").astype(np.float64)
+    Img2    = cv2.imread( "A:\\_\\triptych\\virtual\\triptych\\commons\\static\\vDB\\mondie.png ").astype(np.float64)
+    Merge   = cv2.addWeighted( Img1, 1.0, Img2, 0.0, 0.0 )
+
+    cv2.imwrite( "A:\\_\\triptych\\virtual\\triptych\\commons\\static\\vDB\\merge6.jpg", Merge )
+    '''
+
+    Original    = cv2.imread( "/Users/Beril/source/mintNFT/MERGE/mondie.png" ).astype(np.float64)
+    Background  = cv2.imread( "/Users/Beril/source/mintNFT/MERGE/logo.png" ).astype(np.float64)
+    Mask        = cv2.imread( "/Users/Beril/source/mintNFT/MERGE/mask.png" ).astype(np.float64)
+
+
+    #Mask        = cv2.blur( Mask, (5, 5))
+    InvMask     = cv2.bitwise_not( Mask ).astype(np.float64)
+    Mask        = Mask.astype(np.float64)
+    Img1        = cv2.multiply( Mask, Original) / 255.0
+    Img2        = cv2.multiply( InvMask, Background) / 255.0
+    #Merge = cv2.addWeighted(Img1, 0.8, Img2, 0.2, 0.0)
+    #Merge = cv2.addWeighted(Background, 0.6, Mask, 0.4, 0.0).astype(np.uint8)
+    Result      = (cv2.add( Img1, Img2 ))
+    Merge   = cv2.addWeighted( Background, 0.5, Result, 0.5, 0.5)
+    #Merge   = cv2.addWeighted( Background, 0.4, Merge, 0.6, 0.0 )
+    print('paths okay')
+    # Result      = cv2.add(Img1, Img2)
+    '''
+    (h, s, v) = cv2.split(Merge)
+    s = s * 0.1
+    h = h * 0.3
+    v = v * 0.5
+    s = np.clip(s, 128, 255)
+    Merge = cv2.merge([h, s, v])
+    '''
+
+
+    cv2.imwrite("/Users/Beril/source/mintNFT/MERGE/mondrian.png", Merge )
+
+    Response = render(Request, 'projectx.html', {'Dada'  : '...'} )
+    return Response
+
+
+
+def image_colorfulness(image):
+    # split the image into its respective RGB components
+    (B, G, R) = cv2.split(image.astype("float"))
+
+    # compute rg = R - G
+    rg = np.absolute(R - G)
+
+    # compute yb = 0.5 * (R + G) - B
+    yb = np.absolute(0.5 * (R + G) - B)
+
+    # compute the mean and standard deviation of both `rg` and `yb`
+    (rbMean, rbStd) = (np.mean(rg), np.std(rg))
+    (ybMean, ybStd) = (np.mean(yb), np.std(yb))
+
+    # combine the mean and standard deviations
+    stdRoot = np.sqrt((rbStd ** 2) + (ybStd ** 2))
+    meanRoot = np.sqrt((rbMean ** 2) + (ybMean ** 2))
+
+    # derive the "colorfulness" metric and return it
+    return stdRoot + (0.3 * meanRoot)

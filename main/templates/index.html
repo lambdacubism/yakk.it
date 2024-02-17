@@ -1,0 +1,554 @@
+<html>
+
+<head>
+
+	<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>
+
+	{% load static %}
+	{% static 'vDB' as base_url %}
+
+	<style>
+
+		body			{ margin-left: 0.3in;
+					  margin-right: 0.3in; font-family:arial;  }
+
+		html			{ /* background: url(visuals/bg.jpg) no-repeat center center fixed; */
+					  -webkit-background-size: cover;	-moz-background-size: cover;
+
+					  -o-background-size: cover;		background-size: cover; }
+
+		a:link		{ color: inherit; text-decoration:none }
+		a:hover		{ color: #0ff }
+		a:visited	{ color: inherit }
+
+
+
+	/* background */
+	:root		{ --dBACKGROUNDBODY:#fff; --nBACKGROUNDBODY:#111113 }
+	.bBDY 		{ background-color: var(--dnBACKGROUNDBODY) }
+
+	/* panels */
+	:root		{ --dBACKGROUNDPANELC:#ccc; --nBACKGROUNDPANELC:#18181f }
+	.bPNLc 		{ background-color: var(--dnBACKGROUNDPANELC) }
+	:root		{ --dBACKGROUNDPANELLR:#bbb; --nBACKGROUNDPANELLR:#111113 }
+	.bPNLlr 	{ background-color: var(--dnBACKGROUNDPANELLR) }
+
+	/* controlbar */
+	:root		{ --dBACKGROUNDCONTROLBAR: #ccc,#ddd,#aaa; --nBACKGROUNDCONTROLBAR: #555558,#444446,#323233 }
+	.bCNT 		{ background-image: linear-gradient( var(--dnBACKGROUNDCONTROLBAR) ) }
+	:root		{ --dFONTCONTROLBAR:#444;  --nFONTCONTROLBAR:#999 }
+	.fCNT 		{ font-family: source-sans-pro, sans-serif; line-height: 1.0vw; font-size:0.85vw; color: var(--dnFONTCONTROLBAR) }
+	:root		{ --dSHADOWBLACK:inset 0 0 1px 0 #aaa, 0 3px 0px 0 #444;	--nSHADOWBLACK:inset 0 0 2px 0 #303838, 0 2px 4px 0 #0a0a0a }
+	.sBLK 		{ box-shadow: var(--dnSHADOWBLACK) }				/* SIDESHADOW --dSHADOWBLACK:inset 0 0 1px 0 #aaa, 0 3px 9px 0 #444 */
+																	/* box-shadow:inset 0 0 23px 0 #282328, 3px 3px 6px 0 #101; */
+																	/* before JUN 0 0 3px 1px #ccc, 0 3px 5px 2px #888 */
+
+	.subject			{ position:absolute; background:rgb(132,132,132,1.0); width:14%; height:2%; padding:12px; text-align:center; color:#222; font-size:0.55em; border-radius:12px }
+
+
+
+	.b3	{ position:absolute; background-color:rgba(220, 200, 255, 0.1); width:25%;height:9%; color:#b9b; font-size:0.8em;font-weight:600; padding:12px;padding-top:20px; border-radius:16px }
+	.b4	{ position:absolute; background-color:rgba(220, 200, 255, 0.1); width:17%;height:9%; font-family:arial; font-size:1.2em; padding:10px; padding-top:16px; border-radius:16px }
+	.b9	{ position:absolute; background-color:rgba(220, 200, 255, 0.1); width:87%;height:3%; font-family:arial; font-size:1.2em; padding:10px; padding-top:16px; border-radius:16px }
+
+	.display1			{ position:absolute; background:#222; padding:10px; width:40%; height:8%; text-align:center; font-family:arial; color:#eee; font-size:1.9em; ; border-radius:10px }
+	.font0				{ font-family:arial; color:#fff; font-weight:200 }
+	.font1				{ font-family:arial; color:#388; font-size:1.0em }
+	.font2				{ font-family:arial; color:#97f; font-size:1.8em }
+	.font3a				{ font-family:arial; color:#a8a; font-size:0.7em; font-weight:600 }
+	.font3b				{ font-family:arial; color:#d3c; font-size:1.3em; font-weight:600 }
+	.font4				{ font-family:arial; color:#305; font-size:0.8em }
+
+	.FILTERsummary		{ font-family:arial; color:#8cc; font-size:80% }
+	.FILTERliteral		{ font-family:arial; color:#666; font-size:85% }
+	.FILTERinput		{ display:inline-block; font-family:arial; color:#fff; font-size:90%; width:10%; background-image:url({% static 'vAccessories/line.png' %}); padding:1px; border-radius:4px; line-height:1.3em }
+	.LISTHEADINGfont	{ font-family:arial; color:#666; font-size:90% }
+	.LISTfont			{ font-family:arial; color:#aaa; font-size:85% }
+
+	.cellB 				{ display:inline-block; visibility:inherit; width:14%; opacity:0.6;  }
+	.cellC 				{ display:inline-block; visibility:inherit; width:14%; height:100%; font-size:0.4em }
+
+	.blink		{ animation: blink-animation 0.4s steps(2, start) infinite; -webkit-animation: blink-animation 1s steps(2, start) infinite; }
+			@keyframes blink-animation 		{ to { visibility: hidden; } }
+			@-webkit-keyframes blink-animation 	{ to { visibility: hidden; } }
+
+	.circle 			{ border:2px solid white; border-radius:50%; background:rgba(0,0,0,0); color:white; width:100px; height:100px; }
+
+	.slidetoleft			{ animation-name: slidetoleft;  animation-duration: 0.2s; animation-fill-mode:forwards; animation-timing-function: ease-in-out; }
+	@keyframes slidetoleft  { 0% {left:100%;}  10% {left:90%;}  20% {left:80%;}  30% {left:70%;}  40% {left:60%;}  50% {left:50%;}  60% {left:40%;}  70% {left:30%;}  80% {left:20%;}  90% {left:10%;}  100% {left:0%; } }
+
+	.slidetoright			{ animation-name: slidetoright;  animation-duration: 0.5s; animation-fill-mode:forwards; animation-timing-function: ease-in-out; }
+	@keyframes slidetoright { 0% {left:-100%;}  10% {left:-90%;}  20% {left:-80%;}  30% {left:-70%;}  40% {left:-60%;}  50% {left:-50%;}  60% {left:-40%;}  70% {left:-30%;}  80% {left:-20%;}  90% {left:-10%;}  100% {left:0%; } }
+
+
+	.dropdown			{ animation-name: dropdown;  animation-duration: 0.5s; animation-fill-mode:forwards; animation-timing-function: ease-in-out; }
+	@keyframes dropdown { 0% {top:35%;}	  10% {top:36%;}  20% {top:37%;}  30% {top:38%;}  40% {top:39%;}  50% {top:40%;}  60% {top:41%;}  70% {top:42%;}  80% {top:43%;}  90% {top:44%;}  100% {top:45%;} }
+	.dropdownx			{ animation-name: dropdownx;   animation-duration: 0.9s;  animation-fill-mode:forwards; animation-timing-function: ease-in-out; }
+	@keyframes dropdownx { 0% {border-radius:50%}	   100% {border-radius:50% 50% 16% 16%} }
+
+	.scaleL1 			{ animation-name: scaleL1;   animation-duration: 0.3s;  animation-fill-mode:forwards; animation-timing-function: ease; }
+	@keyframes scaleL1  { 0% {scale:1.0; }	 100% { transform: translateX(7%) translateY(43%); scale:2.2; } }
+	.scaleL2 			{ animation-name: scaleL2;   animation-duration: 0.3s;  animation-fill-mode:forwards; animation-timing-function: ease; }
+	@keyframes scaleL2  { 0% {scale:1.0; }	 100% { transform: translateX(30.5%) translateY(25%); scale:2.2; } }
+	.scaleL3 			{ animation-name: scaleL3;   animation-duration: 0.3s;  animation-fill-mode:forwards; animation-timing-function: ease; }
+	@keyframes scaleL3 { 0% {scale:1.0; }	 100% { transform: translateX(71%) translateY(10%); scale:2.2; } }
+
+	.scaleMoreL1 			{ animation-name: scaleMoreL1;   animation-duration: 0.6s;  animation-fill-mode:forwards; animation-timing-function: ease-out; }
+	@keyframes scaleMoreL1  { 0% { transform: translateX(7%) translateY(43%); scale:2.2 }	 100% { transform: translateX(28.0%) translateY(35.5%); scale:6.2; } }
+	.scaleMoreL2 			{ animation-name: scaleMoreL2;   animation-duration: 0.6s;  animation-fill-mode:forwards; animation-timing-function: ease-out; }
+	@keyframes scaleMoreL2  { 0% { transform: translateX(30.5%) translateY(25%); scale:2.2 }	 100% { transform: translateX(26.75%) translateY(38.1%); scale:7.75; } }
+	.scaleMoreL3 			{ animation-name: scaleMoreL3;   animation-duration: 0.6s;  animation-fill-mode:forwards; animation-timing-function: ease-out; }
+	@keyframes scaleMoreL3  { 0% { transform: translateX(71%) translateY(10%); scale:2.2 }	 100% { transform: translateX(24.0%) translateY(40.5%); scale:10.32; } }
+
+	.descaleL1 			{ animation-name: descaleL1;   animation-duration: 0.3s;  animation-fill-mode:forwards; animation-timing-function: ease; }
+	@keyframes descaleL1  { 100% { transform: translateX(-0.7%)}; scale:1.0; }
+	.descaleL2 			{ animation-name: descaleL2;   animation-duration: 0.3s;  animation-fill-mode:forwards; animation-timing-function: ease; }
+	@keyframes descaleL2  { 100% { transform: translateX(-3.05%)}; scale:1.0; }
+	.descaleL3 			{ animation-name: descaleL3;   animation-duration: 0.3s;  animation-fill-mode:forwards; animation-timing-function: ease; }
+	@keyframes descaleL3  { 100% { transform: translateX(-7.1%); scale:1.0; } }
+
+	</style>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<script>var csrfToken  = '{{ csrf_token }}'							// must be specified in main HTML file  </script>
+
+	
+<script>
+
+var imgLOGOsrc	=
+'data:image/bmp;base64,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'
+
+var imgNOONsrc	=
+'data:image/bmp;base64,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'
+
+var imgSUNSETsrc =
+'data:image/bmp;base64,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'
+
+	var Counter = 0;
+
+	//
+
+	// G E N E R A L
+
+	var NULLTEXT = '';
+	var MOBILE   = 0;       var DESKTOP = 1;
+	var NO		 = 0;		var YES     = 1;
+	var OFF		 = 0;		var ON      = 1;
+	var CLOSED	 = 0;		var OPEN    = 1;
+	var LEFT	 = 0;		var RIGHT   = 1;
+	var PLINE	 = 'P';		var CLINE   = 'C';
+
+	// const ENGLISH	= 0;    ... see locale.js
+    // const FRENCH		= 1;    ... see locale.js
+
+    let Device       = DESKTOP;
+    let DisplayMode  = DESKTOP;
+    let CurrentPanel = 1;
+	let Width 	     = window.screen.width;
+	var ASPECT	     = Width / window.screen.height;
+	var ZOOMSCALE	 = ( Width > 1919 ? 1.00 : ( Width > 1535 ? 1.25  : 1.50 ) );	// breakpoints for responsive single file css specification
+
+    const System     = {};
+
+	function createSystem() {
+
+		//... the global variable "System" is not a DIV >> all HTML elements whose handles are "properties" of the "System" are appended to DOM root ("document.body")
+
+		//... get screen size
+		System.ScreenWidth  = screen.width;
+		System.ScreenHeight = screen.height;
+		System.Aspect 		= screen.width / screen.height;
+		Device = ( System.Aspect < 1 ) ? MOBILE : DESKTOP;
+
+		//... 375 x 667	1.77		1519 x 796								1920 x 1080 x 60hz
+		//... 						window.innerWidth / window.innerWidth 	screen.width / screen.height
+
+
+		//... create ptychs (tri-ptychs)
+		System.Ptych = [ '', '', '' ]
+		if ( Device == MOBILE ) {
+			System.Ptych[0] = createPtych( 0, 100 );
+			System.Ptych[1] = createPtych( 0, 100 );
+			System.Ptych[2] = createPtych( 0, 100 );
+		}
+		else {
+			System.Ptych[0] = createPtych( 0, 33.33333 );
+			System.Ptych[1] = createPtych( 33.33333, 33.33333 );
+			System.Ptych[2] = createPtych( 66.66666, 33.33333 );
+		}
+
+		const BlackMask0 = document.createElement('div');
+		const BlackMask2 = document.createElement('div');
+		BlackMask0.style = 'position:absolute; visibility:hidden; z-index:1000; background:#000; top:0%; left:0%; width:33.3333%; height:100%';
+		BlackMask2.style = 'position:absolute; visibility:hidden; z-index:1000; background:#000; top:0%; left:66.6666%; width:33.3333%; height:100%';
+		System.BlackMask0 = BlackMask0;
+		System.BlackMask2 = BlackMask2;
+		document.body.appendChild( BlackMask0 );
+		document.body.appendChild( BlackMask2 );
+
+
+
+		//... create panels
+		System.Panel  			= [ '', '', '' ]
+		System.Panel[0] 		= createPanel( 0 );
+		System.Panel[1] 		= createPanel( 1 );
+		System.Panel[2] 		= createPanel( 2 );
+
+		//... create control bars
+		System.ControlBar  		= [ '', '', '' ]
+		System.ControlBar[0]  	= createControlBar( 0 );
+		System.ControlBar[1]  	= createControlBar( 1 );
+		System.ControlBar[2]  	= createControlBar( 2 );
+
+		// populate panels
+		populateDevelopment();
+
+		//... create date/time
+		System.Logo 			= createLogo();
+
+		//... create date/time
+		System.DateTime 		= createDateTime();
+		System.DateTimeSwitch 	= createDayTimeSwitch();
+
+		// set device/display mode
+		toggleDisplayMode();
+		toggleDisplayMode();
+
+		//... set clock
+		System.DateTime.clock();
+		setInterval( function () { System.DateTime.clock() }, 30000 );
+
+		//createTimeLine( 'P0', 2 );
+		createTimeLine( 'P2', 89.5 );
+
+//<!--/	    redisplayBarLabels( FRENCH )-->
+
+		//.. start in day mode
+		changeDaytimeMode( '--d' );
+	}
+
+
+	function createTimeLine( Panel, Left ) {
+
+		PanelHandle = document.getElementById( Panel )
+		let Day = [];
+		for( let d=0; d<10; d++ ) {
+			D  			= document.createElement('div');
+			D.id 		= d;
+
+			if ( d%2 == 0 )
+				D.style 	= 'position:absolute; background:#333; width:1%; height:14%; left:' + Left + '%';
+			else
+				D.style 	= 'position:absolute; background:#444; width:1%; height:14%; left:' + Left + '%';
+			PanelHandle.appendChild(D);
+			Day.push(D);
+		}
+		for( let d=0; d<7; d++ ) {
+			Day[d].style.top = (d * 14).toString() + '%'
+		}
+	}
+
+
+	function createPtych( LeftCoordinate, Width ) {
+		const Ptych = document.createElement('div');
+		Ptych.style = 'position:absolute; background:#f0f; top:0%; left:' + LeftCoordinate + '%; width:' + Width + '%; height:100%';
+		document.body.appendChild( Ptych );
+		return Ptych;
+	}
+
+
+	function createPanel( ID ) {
+
+		Panel 						= document.createElement('div')
+		Panel.id 					= 'P' + ID;
+		if ( ID == 1 )
+			Panel.style 				= 'position:absolute; z-index:0; background:#f00; text-align:center; top:0%; left:0%; width:100%; height:100%; box-sizing:border-box; padding:4px; color:#666; font-size:1.8em';
+		else
+			Panel.style 				= 'position:absolute; z-index:0; text-align:center; top:0%; left:0%; width:100%; height:100%; box-sizing:border-box; padding:20px; color:#666; font-size:1.8em';
+		if ( ID == 1 )
+			Panel.innerHTML 					= '<br><br><br><br><br><br><br><br>dada sdfsdfsdfsdfs jfjjkre erteru sha  ps  epare has been tehrterj   for years  dada sdfsdfsdfsdfs jfjjkre erteru sha  ps  epare has been tehrterj   for years   ' + ID
+		Panel.onmouseover = function() { swipe( this ) }
+
+
+		System.Ptych[ ID ].appendChild( Panel );
+
+		const NS = 'http://www.w3.org/2000/svg';
+
+		if ( ID != 1 ) {
+
+			//... outer SVG
+			const SVGBase  	= document.createElementNS( NS, 'svg');
+			SVGBase.style 	= 'position:absolute; background:#null; opacity:1.0; top:0%; left:0%; width:100%; height:100%';		// full ptych width !
+
+			//... inner SVG
+			const SVGMask  	= document.createElementNS( NS, 'svg');
+			SVGMask.id  	= 'MASK' + ID;
+
+			SVGMask.setAttribute( 'viewBox', '0 0 400 674' );
+			// SVGMask.preserveAspectRatio = 'none';
+
+		//		if ( ID == 1 )
+		//			SVGMask.classList.add( 'bPNLc' );
+		//		else
+		//			SVGMask.classList.add( 'bPNLlr' );
+
+			const Path = document.createElementNS(NS, 'path');
+			if ( ID == 0 )
+				Path.setAttribute( 'd', ' M 0 0 h400 v674 h-400 Z  M 420,-30 A 0.1 0.7 0 1 0 420, 700 Z')
+			else
+				Path.setAttribute( 'd', ' M 0 0 v674 h400 v-674 Z  M -20,-30 A 0.1 0.7 0 1 1 -20, 700 Z')
+			Path.setAttribute( 'fill',  '#e0e0e0' );
+			Path.setAttribute( 'fillRule', 'evenodd' );
+			//Path.onmouseover = function() { swipe( this ) }
+			SVGMask.appendChild( Path );
+
+			SVGBase.appendChild( SVGMask );
+			Panel.appendChild( SVGBase );
+		}
+		return Panel;
+	}
+
+
+	//		const Node  = document.createTextNode("circle { fill: red; }");
+	//		Path.appendChild( Node );
+
+	function createLogo() {
+		const Logo		    		= document.createElement('div');
+			Logo.style.cssText	    = 'position:relative; margin:auto; z-index:22; background:#f00; top:8.5%; width:2%; height:2%';
+		const LogoImage      		= document.createElement("img");
+			LogoImage.width		   	= 40 / ZOOMSCALE;
+			LogoImage.src   		= imgLOGOsrc;
+			LogoImage.style.cssText = 'box-shadow:0 0.15vw 0.4vw 0.0vw rgba(0,0,0,0.6)';
+			LogoImage.onclick       = function() { toggleDisplayMode() }
+		Logo.appendChild( LogoImage );
+		document.body.appendChild( Logo );
+	}
+
+	function createDayTimeSwitch() {
+		//... create switching daytime (noon/night) container on the control bar and place default symbol image in it
+		const DayTimeSun   		   = document.createElement("img")
+			DayTimeSun.width	   =  34 / ZOOMSCALE;
+			DayTimeSun.src  	   = ( Config.DaytimeMode == '--n' ) ? imgNOONsrc : imgSUNSETsrc;
+		const DayTimeSwitch        = document.createElement('div');
+			DayTimeSwitch.id       = 'DAYTIMESWITCH';
+			DayTimeSwitch.onclick  = function()  { if ( Config.DaytimeMode == '--n' ) {changeDaytimeMode('--d'); DayTimeSwitchImage.src = imgSUNSETsrc}
+														else { changeDaytimeMode('--n'); DayTimeSwitchImage.src = imgNOONsrc} }
+			DayTimeSwitch.style.cssText	= 'position:absolute; z-index:22; opacity:0.8; top:2.6%; width:2.7%; height:10%';
+		DayTimeSwitch.appendChild( DayTimeSun );
+		document.body.appendChild( DayTimeSwitch );
+		return DayTimeSwitch
+	}
+
+	function createControlBar( ID ) {
+		const ControlBar                    = document.createElement('div');
+			ControlBar.id				    = 'CONTROLBAR' + ID;
+			ControlBar.style.cssText	    = 'position:absolute; z-index:21; background:#null; top:1.6%; left:0; width:100%; height:4.7%; font-size:1.4em; outline:none; box-sizing: border-box; padding-top:0.85vw';
+			ControlBar.classList.add('bCNT');
+			ControlBar.classList.add('sBLK');
+			ControlBar.classList.add('fCNT');
+			ControlBar.innerHTML		    = '<span style="padding-left:13vw"></span>' + 'dada    ' + ID ;
+		System.Panel[ ID ].appendChild( ControlBar );
+		return ControlBar;
+	}
+
+	function toggleDisplayMode() {
+
+		if ( Device == MOBILE )
+			return;
+
+		if ( DisplayMode == MOBILE ) {
+			DisplayMode                         = DESKTOP;
+			System.DateTime.style.left          = '0.3%';
+			System.DateTimeSwitch.style.left    = '97.2%';
+			System.Ptych[0].style.left          = '0%';
+			System.Ptych[1].style.left          = '33.33333%';
+			System.Ptych[2].style.left          = '66.66666%';
+			for( let p=0; p<3; p++ )
+				System.Panel[p].style.visibility = 'visible';
+			System.BlackMask0.style.visibility = 'hidden';
+			System.BlackMask2.style.visibility = 'hidden';
+		}
+		else {
+			DisplayMode                         = MOBILE;
+			System.DateTime.style.left          = '33.23%';
+			System.DateTimeSwitch.style.left    = '64.2%';
+			System.Ptych[0].style.left          = '33.33333%';
+			System.Ptych[2].style.left          = '33.33333%';
+			System.BlackMask0.style.visibility = 'visible';
+			System.BlackMask2.style.visibility = 'visible';
+			topPanel(1)
+		}
+
+	}
+
+	function topPanel( TopPanel ) {
+		for( let p=0; p<3; p++ )
+			System.Panel[p].style.zIndex = '10';
+		System.Panel[ TopPanel ].style.zIndex = '11';
+		CurrentPanel = TopPanel;
+	}
+
+	    function swipe( E ) {
+        let Swipe = ''
+		let  x1 = 0, x2 = 0;
+		E.onmousedown = dragMouseDown;
+
+		function dragMouseDown( e ) {
+			e.preventDefault();
+			x2              = e.clientX;
+			E.onmouseup     = closeDragElement;
+			E.onmousemove   = dragElement;
+	    }
+        function dragElement( e ) {
+			e.preventDefault();
+			if ( e.clientX > x2 ) {
+				x1 = x2 - e.clientX;
+				Swipe = LEFT;
+			}
+			else {
+    			x2 = e.clientX;
+    			Swipe = RIGHT;
+    		}
+		}
+        function closeDragElement() {
+            swipePanel( Swipe )
+            E.onmouseup   = null;
+//???       E.onmousedown = null;
+            E.onmousemove = null;
+        }
+    }
+
+    function swipePanel( Swipe ) {
+        for( let p=0; p<3; p++ )
+            ; //System.Panel[p].style.zIndex = '10';
+        System.Panel[1].style.zIndex = '11';
+
+        if ( Swipe == LEFT ) {
+            if      ( CurrentPanel == 2 )   { System.Panel[1].style.zIndex = '12';      CurrentPanel = 1;   }
+            else if ( CurrentPanel == 1 )   { System.Panel[0].classList.add('slidetoright'); System.Panel[0].style.animationName = 'slidetoright';  System.Panel[0].style.zIndex = '12';      CurrentPanel = 0;   }
+            else if ( CurrentPanel == 0 )   { System.Panel[0].classList.add('slidetoright'); System.Panel[0].style.animationName = 'slidetoright';  System.Panel[0].style.zIndex = '12';      CurrentPanel = 0;   }
+        }
+        else {
+            if      ( CurrentPanel == 0 )   { System.Panel[1].style.zIndex = '12';      CurrentPanel = 1;   }
+            else if ( CurrentPanel == 1 )   { System.Panel[2].classList.add('slidetoleft'); System.Panel[2].style.animationName = 'slidetoleft';  System.Panel[2].style.zIndex = '12';      CurrentPanel = 2;   }
+            else if ( CurrentPanel == 2 )   { System.Panel[2].classList.add('slidetoleft'); System.Panel[2].style.animationName = 'slidetoleft';  System.Panel[2].style.zIndex = '12';      CurrentPanel = 2;   }
+        }
+    }
+
+function populateDevelopment() {
+    System.ControlBar[1].innerHTML = '<a href="javascript:topPanel(0)"><div style="position:absolute; background:#null; top:10%; left:20%; width:4%; height:60%"></div></a>'
+    System.ControlBar[1].innerHTML += '<a href="javascript:topPanel(2)"><div style="position:absolute; background:#null; top:10%; left:80%; width:4%; height:60%"></div></a>'
+    System.ControlBar[1].innerHTML  = '<span style="padding-left:13vw"></span>' + 'dada 1';
+
+}
+
+
+function createDateTime() {
+
+    DIV                         = document.createElement('div')
+    DIV.classList.add('fCNT');
+    DIV.style.cssText		    = 'position:absolute; z-index:300; opacity:0.9; top:2.6%; left:0.6%; width:3.6%; text-align:center; font-size:0.65vw; line-height:0.85vw';
+    DIV.Date				    = document.createElement('span');
+    Space					    = document.createElement('span');
+    Space.style.cssText	        = 'padding:1px';
+    //Month				        = document.createElement('span');	//Month.style.cssText	= 'display:none';
+    DIV.Weekday			        = document.createElement('span');
+    DIV.Time				    = document.createElement('span');
+    DIV.Time.style.cssText	    = 'font-size:0.9vw';
+    DIV.appendChild( DIV.Date );
+    DIV.appendChild( Space );
+    //DIV.appendChild( Month );
+    DIV.appendChild( DIV.Weekday );
+    DIV.appendChild( document.createElement('br') );
+    DIV.appendChild( DIV.Time );
+    document.body.appendChild( DIV );
+    DIV.clock = clock;
+
+    function clock() {
+
+        let DT	                = new Date();
+        let Hours               = DT.getHours() + 1;
+
+        DIV.Date.innerText	    = '' + DT.getDate();
+        //Month.innerText	    = Locale.cthMonth[ DT.getMonth() ] + 10;		// january is 0, february is 1, ...
+        DIV.Weekday.innerText	= Locale.cthWeekday[ DT.getDay() ];
+        DIV.Time.innerText		= addZero ( Hours == 0 ? 23 : Hours-1 ) + ':' + addZero(DT.getMinutes() );
+
+        //let MonthCap 		    = [ 31,28,31,30,31,30,31,31,30,31,30,31 ];
+        //DayOffset 		    = ( ()=>{ let Off = 0; for( let i=0; i < MonthN; i++ ) Off += MonthCap[ MonthN-1 ]; return (Off + parseInt(Day)) } )();
+
+        function addZero( T ) { return (  T < 10 ? '0' + T.toString() : T.toString() ) }
+    }
+
+    return DIV;
+}
+
+function changeDaytimeMode( Mode ) {	//: string )
+
+	//... background
+	setElementProperty( 'BODY',       '--dnBACKGROUNDBODY',       Mode + 'BACKGROUNDBODY' )
+
+	//... control bar(s)
+	setElementProperty( 'CONTROLBAR0', '--dnBACKGROUNDCONTROLBAR', Mode + 'BACKGROUNDCONTROLBAR' )
+	setElementProperty( 'CONTROLBAR0', '--dnFONTCONTROLBAR',       Mode + 'FONTCONTROLBAR' )
+	setElementProperty( 'CONTROLBAR0', '--dnSHADOWBLACK',          Mode + 'SHADOWBLACK' )
+	setElementProperty( 'CONTROLBAR1', '--dnBACKGROUNDCONTROLBAR', Mode + 'BACKGROUNDCONTROLBAR' )
+	setElementProperty( 'CONTROLBAR1', '--dnFONTCONTROLBAR',       Mode + 'FONTCONTROLBAR' )
+	setElementProperty( 'CONTROLBAR1', '--dnSHADOWBLACK',          Mode + 'SHADOWBLACK' )
+    setElementProperty( 'CONTROLBAR2', '--dnBACKGROUNDCONTROLBAR', Mode + 'BACKGROUNDCONTROLBAR' )
+	setElementProperty( 'CONTROLBAR2', '--dnFONTCONTROLBAR',       Mode + 'FONTCONTROLBAR' )
+	setElementProperty( 'CONTROLBAR2', '--dnSHADOWBLACK',          Mode + 'SHADOWBLACK' )
+
+
+	// noon/sunset switch
+	if ( Mode == '--d' )
+		Config.DaytimeMode = '--d';
+	else
+		Config.DaytimeMode = '--n';
+
+    //... panels
+	setElementProperty( 'MASK0',         '--dnBACKGROUNDPANELLR',    Mode + 'BACKGROUNDPANELLR' )
+	setElementProperty( 'MASK1',         '--dnBACKGROUNDPANELC',     Mode + 'BACKGROUNDPANELC' )
+	setElementProperty( 'MASK2',         '--dnBACKGROUNDPANELLR',    Mode + 'BACKGROUNDPANELLR' )
+
+
+    return;
+
+    //...  popups
+    setElementProperty( 'MODULESBASE',   '--dnPopups',     Mode + 'POPUPS' )
+    setElementProperty( 'MODULESBASE',   '--dnShadow2',    Mode + 'SHADOW2' )
+    setElementProperty( 'MODULESARROWS', '--dnFontPOPUP',  Mode + 'FONTPOPUP' )
+    setElementProperty( 'MODULES',       '--dnFontPOPUP',  Mode + 'FONTPOPUP' )
+
+    setElementProperty( 'CHANNELBASE',   '--dnPopups',     Mode + 'POPUPS' )
+    setElementProperty( 'CHANNELBASE',   '--dnShadow2',    Mode + 'SHADOW2' )
+
+    setClassProperty( 'popu', '--dnPopups',   Mode + 'POPUPS' )
+
+	//... adjust font color changes for modules list (editor.js)
+	for ( let ithModule = 0; ithModule < 9; ithModule++ ) {		//ModulesMasterArray.length; ithModule++ ) {
+		setElementProperty( 'ML' + ithModule.toString(), '--dnFontPOPUP', Mode + 'FONTPOPUPh');
+		setElementProperty( 'ML' + ithModule.toString(), '--dnFontPOPUP', Mode + 'FONTPOPUP' );
+	}
+	//... adjust font color changes for arrow labels (editor.js)
+	setElementProperty( 'PREVMODULE', '--dnFontPOPUP', Mode + 'FONTPOPUPh');	setElementProperty( 'PREVMODULE', '--dnFontPOPUP', Mode + 'FONTPOPUP');
+	setElementProperty( 'NEXTMODULE', '--dnFontPOPUP', Mode + 'FONTPOPUPh');	setElementProperty( 'NEXTMODULE', '--dnFontPOPUP', Mode + 'FONTPOPUP');
+
+	//... adjust opacity for arrows (editor.js)
+	setElementProperty( 'MODULESLEFTARROW', '--dnOpacity1', Mode + 'OPACITY1h');	setElementProperty( 'MODULESLEFTARROW', '--dnOpacity1', Mode + 'OPACITY1');
+	setElementProperty( 'MODULESRIGHTARROW','--dnOpacity1', Mode + 'OPACITY1h');	setElementProperty( 'MODULESRIGHTARROW','--dnOpacity1', Mode + 'OPACITY1');
+
+	//... MI
+	setElementProperty( 'MIRESPONSE', '--dnFont3', Mode + 'FONT3' );
+
+	setClassProperty( 'fCMM', '--dnFONTCOMMENTS',   Mode + 'FONTCOMMENTS' );
+}
+
+</script>
+</head>
+
+<body id='BODY' onload='createSystem()' style='background:#222; overflow:hidden'>
+</body>
+</html>
+

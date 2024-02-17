@@ -1,0 +1,23 @@
+
+    <div style="position:absolute; background:#null; text-align:center; top:5%; left:17%; margin:0; width:50%; height:20%">
+        {{ AccountImage }}<br><br>
+        {{ Nickname }}<br><br>
+        <a href="javascript:openGPA()"><span style="font-size:1.2em; color:#505050">GPA &thinsp;</span> <span style="font-size:1.8em;color:#658">{{ GPA }}</span><br></A>
+		<span style="font-size:0.9em; color:#505050">first generation yakkster </span><br>
+    </div>
+
+	    <div style='position:absolute; z-index:10000; background:#null; left:4%; top:58%; font-size:0.85em; width:100%; height:8%; color:#777'><br>&nbsp;&nbsp;
+	<table style="width:73%; color:#f00; text-align:center; font-size:0.9em; color:#999">
+		<tr><td class='t1a'>life</td><td class='t1a'>politics</td> <td class='t1a'>business</td><td class='t1a'>blockchain</td> <td class='t1a'>technology</td><td class='t1a'>art</td> <td class='t1a'>sports</td></tr>
+		<tr>{% for t in TopicsByCat %}<td class='t1b'>{{t}}</td>{% endfor %}</tr>
+		<tr>{% for y in YakksByCat  %}<td class='t1b'>{{y}}</td>{% endfor %}</tr>
+	</table>
+
+	</div>
+
+    <div style='position:absolute; z-index:10000; background:#null; left:20%; top:76%; font-size:0.85em; width:44%; height:8%; color:#777'><br>&nbsp;&nbsp;
+	<table style="color:#f00; text-align:center">
+		<tr><td class='t2a'>7'</td><td class='t2a'>1h</td> <td class='t2a'>7h</td><td class='t2a'>1d</td> <td class='t2a'>7d</td><td class='t2a'>1m</td> <td class='t2a'>7m</td></tr>
+		<tr><td class='t2b'>2</td><td class='t2b'>1</td> <td class='t2b'>0</td><td class='t2b'>2</td> <td class='t2b'>1</td><td class='t2b'>5</td> <td class='t2b'>0</td></tr>
+	</table>
+	</div>
